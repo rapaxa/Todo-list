@@ -1,0 +1,19 @@
+
+
+.todoList__header {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.todoLists__wrapper {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+}
+.todoLists__container{
+    min-height: 100vh;
+    background-color: #ffe7e7;
+}
