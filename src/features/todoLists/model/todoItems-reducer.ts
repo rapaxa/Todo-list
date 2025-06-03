@@ -13,6 +13,7 @@ export const changeTaskStatusAC = createAction<{
   id: string;
   done: boolean;
 }>('TodoLists/changeStatus');
+// export const counterTodoListAC = createAction<{ id: string }>('TodoLists/counter');
 
 export const dndAC = createAction<{
   todolistId: string;
@@ -51,6 +52,13 @@ export const todoItemsReducer = createReducer(initialState, (builder) => {
       const list = state[todolistId];
       [list[draggedIndex], list[targetIndex]] = [list[targetIndex], list[draggedIndex]];
     });
+  // .addCase(counterTodoListAC, (state, action) => {
+  //   const activeCount = state[action.payload.id].reduce(
+  //     (acc, item) => (item.done ? acc + 1 : acc),
+  //     0
+  //   );
+  //   console.log(activeCount);
+  // });
 });
 type TodoListItemsTypes = {
   id: string;

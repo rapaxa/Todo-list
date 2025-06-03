@@ -1,0 +1,23 @@
+.counter__wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2rem;
+    font-family: "Droid Sans Mono Slashed" ;
+    font-weight: bold;
+    font-size: 1rem;
+
+}
+.active__span{
+    color: #191818;
+
+}
+.active_number__span {
+    color: #ff2121;
+}
+.completed__span {
+    color: #3a2525;
+}
+.completed_number__span {
+    color: darkblue;
+}

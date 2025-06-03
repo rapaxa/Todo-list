@@ -28,7 +28,7 @@ export const todoListsReducer = createReducer(initialState, (builder) => {
     });
 });
 
-type TodoListTypes = {
+export type TodoListTypes = {
   id: string;
   title: string;
   filter: FilterButtonsTypes;

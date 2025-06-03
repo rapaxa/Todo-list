@@ -1,0 +1,16 @@
+.strikethrough {
+    position: relative;
+    opacity: 0.5;
+}
+
+.strikethrough::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #070707;
+    transform: translateY(-50%);
+    z-index: -120;
+}

@@ -8,6 +8,7 @@ import {
   TaskItem,
 } from '@/features/todoLists/ui/TodoLists/TodoListItems/TaskItem/TaskItem.tsx';
 import { FilterButtons } from '@/features/todoLists/ui/TodoLists/TodoListItems/FiltreButtons/FiltredButtons.tsx';
+import { Counter } from '@/features/todoLists/ui/TodoLists/TodoListItems/Counter/Counter.tsx';
 
 export const TodoListItems = ({ todoList }: TodoListItemsTypes) => {
   const dispatch = useAppDispatch();
@@ -19,6 +20,7 @@ export const TodoListItems = ({ todoList }: TodoListItemsTypes) => {
       <TodoTitle title={todoList.title} id={todoList.id} />
       <CreateItemForm onCreateItem={createTask} />
       <TaskItem todoList={todoList} />
+      <Counter todoListId={todoList.id} />
       <FilterButtons id={todoList.id} />
     </div>
   );

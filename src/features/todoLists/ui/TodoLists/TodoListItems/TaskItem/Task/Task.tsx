@@ -11,7 +11,7 @@ import {
   deleteTaskItemAC,
 } from '@/features/todoLists/model/todoItems-reducer.ts';
 import * as React from 'react';
-
+import s from './Task.module.css';
 export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) => {
   const dispatch = useAppDispatch();
   const [checkboxColor] = useState(getRandomColor());
@@ -45,6 +45,7 @@ export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) =>
       style={{ listStyle: 'none' }}
     >
       <ListItem
+        className={item.done ? s.strikethrough : ''}
         draggable={true}
         onDragStart={() => onDragStart(index)}
         onDragOver={(e) => handlerDragOver(e)}
