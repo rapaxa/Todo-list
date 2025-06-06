@@ -1,28 +1,33 @@
 import { createAction, createReducer, nanoid } from '@reduxjs/toolkit';
 import { createTodoListAC, deleteTodoListAC } from './todoLists-reducer.ts';
+import { TodoListTasksTypes } from '@/common/types';
 
 const initialState: TodoListTypes = {};
-export const deleteTaskItemAC = createAction<{ todolistId: string; id: string }>(
-  'TodoLists/deleteTask'
+export const deleteTodoTaskAC = createAction<{ todolistId: string; id: string }>(
+  'TodoListsTasks/deleteTask'
 );
-export const createTodoItemAC = createAction<{ todolistId: string; title: string }>(
-  'TodoLists/create'
+export const createTodoTaskAC = createAction<{ todolistId: string; title: string }>(
+  'TodoListsTasks/create'
 );
-export const changeTaskStatusAC = createAction<{
+export const changeTodoTaskTitleAC = createAction<{
+  todolistId: string;
+  id: string;
+  title: string;
+}>('TodoListsTasks/changeTitle');
+export const changeTodoTaskStatusAC = createAction<{
   todolistId: string;
   id: string;
   done: boolean;
-}>('TodoLists/changeStatus');
-// export const counterTodoListAC = createAction<{ id: string }>('TodoLists/counter');
+}>('TodoListsTasks/changeStatus');
 
-export const dndAC = createAction<{
+export const dndTodoTaskAC = createAction<{
   todolistId: string;
   draggedIndex: number;
   targetIndex: number;
-}>('TodoLists/dnd');
+}>('TodoListsTasks/dnd');
 export const todoItemsReducer = createReducer(initialState, (builder) => {
   builder
-    .addCase(createTodoItemAC, (state, action) => {
+    .addCase(createTodoTaskAC, (state, action) => {
       const newState = { id: nanoid(), title: action.payload.title, done: false };
       state[action.payload.todolistId].unshift(newState);
     })
@@ -30,13 +35,13 @@ export const todoItemsReducer = createReducer(initialState, (builder) => {
       state[action.payload.id] = [];
     })
 
-    .addCase(changeTaskStatusAC, (state, action) => {
+    .addCase(changeTodoTaskStatusAC, (state, action) => {
       const task = state[action.payload.todolistId].find((task) => task.id === action.payload.id);
       if (task) {
         task.done = action.payload.done;
       }
     })
-    .addCase(deleteTaskItemAC, (state, action) => {
+    .addCase(deleteTodoTaskAC, (state, action) => {
       const index = state[action.payload.todolistId].findIndex(
         (todolist) => todolist.id === action.payload.id
       );
@@ -47,22 +52,17 @@ export const todoItemsReducer = createReducer(initialState, (builder) => {
     .addCase(deleteTodoListAC, (state, action) => {
       delete state[action.payload.id];
     })
-    .addCase(dndAC, (state, action) => {
+    .addCase(dndTodoTaskAC, (state, action) => {
       const { todolistId, draggedIndex, targetIndex } = action.payload;
       const list = state[todolistId];
       [list[draggedIndex], list[targetIndex]] = [list[targetIndex], list[draggedIndex]];
+    })
+    .addCase(changeTodoTaskTitleAC, (state, action) => {
+      const task = state[action.payload.todolistId].find((task) => task.id === action.payload.id);
+      if (task) {
+        task.title = action.payload.title;
+      }
     });
-  // .addCase(counterTodoListAC, (state, action) => {
-  //   const activeCount = state[action.payload.id].reduce(
-  //     (acc, item) => (item.done ? acc + 1 : acc),
-  //     0
-  //   );
-  //   console.log(activeCount);
-  // });
 });
-type TodoListItemsTypes = {
-  id: string;
-  title: string;
-  done: boolean;
-};
-type TodoListTypes = Record<string, TodoListItemsTypes[]>;
+
+type TodoListTypes = Record<string, TodoListTasksTypes[]>;

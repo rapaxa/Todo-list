@@ -1,13 +1,12 @@
 import { AnimatePresence } from 'framer-motion';
 import { List } from '@mui/material';
-import { useAppSelector } from '@/common/hooks/useAppSelector.ts';
 import { selectTodoListItems } from '@/features/todoLists/model/todoItems-selectors.ts';
 import { TodoListItemsTypes } from '@/features/todoLists/ui/TodoLists/TodoListItems/TodoListItems.tsx';
 import { Task } from './Task/Task.tsx';
 import { useState } from 'react';
-import { dndAC } from '@/features/todoLists/model/todoItems-reducer.ts';
-import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
 import * as React from 'react';
+import { useAppDispatch, useAppSelector } from '@/common/hooks';
+import { dndTodoTaskAC } from '@/features/todoLists/model/todoItems-reducer.ts';
 
 export const TaskItem = ({ todoList }: TodoListItemsTypes) => {
   const items = useAppSelector(selectTodoListItems);
@@ -22,15 +21,19 @@ export const TaskItem = ({ todoList }: TodoListItemsTypes) => {
     filteredTodo = filteredTodo.filter((item) => !item.done);
   }
 
-  const handleDragStart = (index: number) => {
+  const handleDragStart = (e: React.DragEvent<HTMLLIElement>, index: number) => {
     setDraggedIndex(index);
+    e.currentTarget.style.borderRadius = '10px';
+    e.currentTarget.style.backgroundColor = 'rgba(161,161,161,0.27)';
   };
 
   const handleDrop = (e: React.DragEvent<HTMLLIElement>, index: number) => {
     if (draggedIndex !== null && draggedIndex !== index) {
-      dispatch(dndAC({ todolistId: todoList.id, draggedIndex: draggedIndex, targetIndex: index }));
+      dispatch(
+        dndTodoTaskAC({ todolistId: todoList.id, draggedIndex: draggedIndex, targetIndex: index })
+      );
       setDraggedIndex(index);
-      e.currentTarget.style.backgroundColor = 'white';
+      e.currentTarget.style.backgroundColor = 'rgb(250,250,250)';
     }
   };
   return (

@@ -1,6 +1,6 @@
 import { Main } from '@/app/Main.tsx';
 import s from './App.module.css';
-import { Header } from '@/common/components/Header/Header.tsx';
+import { Header } from '@/common/components';
 
 const App = () => {
   return (

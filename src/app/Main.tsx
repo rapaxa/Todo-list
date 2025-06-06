@@ -1,8 +1,8 @@
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
 import { createTodoListAC } from '@/features/todoLists/model/todoLists-reducer.ts';
-import { CreateItemForm } from '@/common/components/CreateItemForm/CreateItemForm.tsx';
 import { TodoLists } from '@/features/todoLists/ui/TodoLists/TodoLists.tsx';
 import s from './Main.module.css';
+import { CreateItemForm } from '@/common/components';
 
 export const Main = () => {
   const dispatch = useAppDispatch();

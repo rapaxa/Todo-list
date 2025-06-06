@@ -7,10 +7,18 @@
     content: "";
     position: absolute;
     top: 50%;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background-color: #070707;
     transform: translateY(-50%);
+    height: 1px;
     z-index: -120;
+    background-color: #070707;
+    animation:1s alternate sun-rise forwards;
+}
+@keyframes sun-rise {
+    from {
+        width: 0;
+    }
+    to {
+        width: 90%;
+
+    }
 }

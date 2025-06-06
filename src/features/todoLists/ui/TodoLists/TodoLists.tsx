@@ -1,8 +1,8 @@
-import { useAppSelector } from '@/common/hooks/useAppSelector.ts';
 import s from './TodoLists.module.css';
 import { TodoListItems } from '@/features/todoLists/ui/TodoLists/TodoListItems/TodoListItems.tsx';
 import { selectTodoLists } from '@/features/todoLists/model/todoLists-selectors.ts';
 import { motion } from 'framer-motion';
+import { useAppSelector } from '@/common/hooks';
 
 export const TodoLists = () => {
   const todoLists = useAppSelector(selectTodoLists);

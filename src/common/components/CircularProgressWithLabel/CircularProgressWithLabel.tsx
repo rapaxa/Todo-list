@@ -24,7 +24,6 @@ export const CircularProgressWithLabel = (
         }}
       >
         <Typography variant="caption" component="div" sx={{ color: 'text.secondary' }}>
-          {' '}
           {`${Math.round(percentage)}%`}
         </Typography>
       </Box>
