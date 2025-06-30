@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { dnd, fetchTasks, selectTodoTasks } from '@/features/todoLists/model/todoItems-reducer.ts';
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
 import * as React from 'react';
+import { TaskStatus } from '@/features/todoLists/api/types.ts';
 
 export const TaskItem = ({ todoList }: TodoListItemsTypes) => {
   const items = useAppSelector(selectTodoTasks);
@@ -17,12 +18,13 @@ export const TaskItem = ({ todoList }: TodoListItemsTypes) => {
   }, []);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const dispatch = useAppDispatch();
+
   let filteredTodo = items[id];
 
   if (filter === 'completed') {
-    filteredTodo = filteredTodo.filter((item) => item.done);
+    filteredTodo = filteredTodo.filter((item) => item.status === TaskStatus.Completed);
   } else if (filter === 'active') {
-    filteredTodo = filteredTodo.filter((item) => !item.done);
+    filteredTodo = filteredTodo.filter((item) => item.status === TaskStatus.New);
   }
 
   const handleDragStart = (index: number) => {

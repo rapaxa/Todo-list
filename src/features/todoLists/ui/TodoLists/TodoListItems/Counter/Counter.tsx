@@ -1,19 +1,19 @@
 import { useAppSelector } from '@/common/hooks/useAppSelector.ts';
 import s from './Counter.module.css';
 import { CircularProgressWithLabel } from '@/common/components';
-import { selectTodoTasks } from '@/features/todoLists/model/todoItems-reducer.ts';
+import {
+  selectActiveTasks,
+  selectAllTasksCount,
+  selectCompletedTasks,
+} from '@/features/todoLists/model/selectors/tasksSelectors.ts';
 
 export const Counter = ({ todoListId }: CounterProps) => {
-  const getItemCount = useAppSelector(selectTodoTasks);
-  const activeCount = getItemCount[todoListId].filter((task) => !task.done).length;
-  const completedCount = getItemCount[todoListId].filter((task) => task.done).length;
-
+  const allTasks = useAppSelector((state) => selectAllTasksCount(state, todoListId));
+  const activeCount = useAppSelector((state) => selectActiveTasks(state, todoListId));
+  const completedCount = useAppSelector((state) => selectCompletedTasks(state, todoListId));
   return (
     <div className={s.counter__wrapper}>
-      <CircularProgressWithLabel
-        value={completedCount}
-        maxValue={getItemCount[todoListId].length}
-      />
+      <CircularProgressWithLabel value={completedCount} maxValue={allTasks} />
       <div>
         <span className={s.active__span}>Active:</span>
         <span className={s.active_number__span}>{activeCount}</span>

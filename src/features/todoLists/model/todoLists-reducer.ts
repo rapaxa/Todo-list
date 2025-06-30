@@ -42,6 +42,12 @@ export const todoListSlice = createAppSlice({
         },
       }
     ),
+    changeTodolistFilterAC: create.reducer<{ id: string; filter: FilterTypes }>((state, action) => {
+      const todolist = state.todolists.find((todolist) => todolist.id === action.payload.id);
+      if (todolist) {
+        todolist.filter = action.payload.filter;
+      }
+    }),
     deleteTodolist: create.asyncThunk(
       async (todolistId: string, thunkAPI) => {
         try {
@@ -65,7 +71,8 @@ export const todoListSlice = createAppSlice({
   },
 });
 export default todoListSlice.reducer;
-export const { fetchTodolists, createTodolist, deleteTodolist } = todoListSlice.actions;
+export const { fetchTodolists, createTodolist, deleteTodolist, changeTodolistFilterAC } =
+  todoListSlice.actions;
 export const { selectTodolist } = todoListSlice.selectors;
 export type DomainTodoWithFilter = DomainTodolists & {
   filter: FilterTypes;

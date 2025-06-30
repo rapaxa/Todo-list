@@ -19,7 +19,7 @@ export const TodoListItems = ({ todoList }: TodoListItemsTypes) => {
       <TodoTitle title={todoList.title} id={todoList.id} />
       <CreateItemForm onCreateItem={createTask} />
       <TaskItem todoList={todoList} />
-      {/*<Counter todoListId={todoList.id} />*/}
+      <Counter todoListId={todoList.id} />
       <FilterButtons id={todoList.id} />
     </div>
   );

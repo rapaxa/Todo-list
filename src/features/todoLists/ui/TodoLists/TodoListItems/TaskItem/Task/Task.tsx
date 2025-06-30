@@ -1,4 +1,5 @@
 // Task.tsx
+import * as React from 'react';
 import { ChangeEvent, useState } from 'react';
 import { Checkbox, Grid, IconButton, ListItem } from '@mui/material';
 import { Delete } from '@mui/icons-material';
@@ -6,15 +7,22 @@ import { motion } from 'framer-motion';
 import { getRandomColor } from '@/common/utils/getRandomColors.ts';
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
 import { changeTaskStatus, deleteTaskItem } from '@/features/todoLists/model/todoItems-reducer.ts';
-import * as React from 'react';
 import s from './Task.module.css';
 import { EditableSpan } from '@/common/components';
+import { TaskStatus } from '@/features/todoLists/api/types.ts';
+
 export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) => {
   const dispatch = useAppDispatch();
   const [checkboxColor] = useState(getRandomColor());
 
   const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(changeTaskStatus({ todolistId, id: item.id, done: e.target.checked }));
+    dispatch(
+      changeTaskStatus({
+        todolistId,
+        taskId: item.id,
+        status: e.target.checked ? TaskStatus.Completed : TaskStatus.New,
+      })
+    );
   };
   const handlerDragOver = (e: React.DragEvent<HTMLLIElement>) => {
     e.preventDefault();
@@ -29,7 +37,7 @@ export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) =>
     e.currentTarget.style.backgroundColor = 'white';
   };
   const deleteTask = () => {
-    dispatch(deleteTaskItem({ todolistId, id: item.id }));
+    dispatch(deleteTaskItem({ todolistId, taskId: item.id }));
   };
 
   return (
@@ -42,7 +50,7 @@ export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) =>
       style={{ listStyle: 'none' }}
     >
       <ListItem
-        className={item.done ? s.strikethrough : ''}
+        className={item.status ? s.strikethrough : ''}
         draggable={true}
         onDragStart={() => onDragStart(index)}
         onDragOver={(e) => handlerDragOver(e)}
@@ -64,10 +72,10 @@ export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) =>
               color: checkboxColor,
               '&.Mui-checked': { color: checkboxColor },
             }}
-            checked={item.done}
+            checked={!!item.status}
             onChange={changeTaskStatusHandler}
           />
-          <EditableSpan status={item.done} titleValue={item.title} />
+          <EditableSpan status={!!item.status} titleValue={item.title} />
         </Grid>
         <IconButton sx={{ alignSelf: 'flex-end' }} onClick={deleteTask}>
           <Delete />
@@ -87,5 +95,5 @@ type Props = {
 type items = {
   id: string;
   title: string;
-  done: boolean;
+  status: TaskStatus;
 };

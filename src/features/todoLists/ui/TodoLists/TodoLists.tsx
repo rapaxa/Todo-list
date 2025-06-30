@@ -7,7 +7,6 @@ import { TodoListItems } from '@/features/todoLists/ui/TodoLists/TodoListItems/T
 
 export const TodoLists = () => {
   const todoLists = useAppSelector(selectTodolist);
-  console.log(todoLists);
   return (
     <>
       {todoLists.map((item) => (
