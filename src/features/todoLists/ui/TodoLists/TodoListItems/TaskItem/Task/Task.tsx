@@ -6,7 +6,11 @@ import { Delete } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { getRandomColor } from '@/common/utils/getRandomColors.ts';
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
-import { changeTaskStatus, deleteTaskItem } from '@/features/todoLists/model/todoItems-reducer.ts';
+import {
+  changeTaskStatus,
+  changeTaskTitle,
+  deleteTaskItem,
+} from '@/features/todoLists/model/todoItems-reducer.ts';
 import s from './Task.module.css';
 import { EditableSpan } from '@/common/components';
 import { TaskStatus } from '@/features/todoLists/api/types.ts';
@@ -38,6 +42,9 @@ export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) =>
   };
   const deleteTask = () => {
     dispatch(deleteTaskItem({ todolistId, taskId: item.id }));
+  };
+  const changeTodolistTaskTitle = (title: string) => {
+    dispatch(changeTaskTitle({ todolistId: todolistId, taskId: item.id, title: title }));
   };
 
   return (
@@ -75,7 +82,11 @@ export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) =>
             checked={!!item.status}
             onChange={changeTaskStatusHandler}
           />
-          <EditableSpan status={!!item.status} titleValue={item.title} />
+          <EditableSpan
+            status={!!item.status}
+            onChange={changeTodolistTaskTitle}
+            titleValue={item.title}
+          />
         </Grid>
         <IconButton sx={{ alignSelf: 'flex-end' }} onClick={deleteTask}>
           <Delete />

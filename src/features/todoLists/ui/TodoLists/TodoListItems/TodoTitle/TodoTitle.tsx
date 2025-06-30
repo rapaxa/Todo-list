@@ -4,7 +4,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import s from './TodoTitle.module.css';
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
 import { EditableSpan } from '@/common/components';
-import { deleteTodolist } from '@/features/todoLists/model/todoLists-reducer.ts';
+import {
+  changeTodolistTitle,
+  deleteTodolist,
+} from '@/features/todoLists/model/todoLists-reducer.ts';
 
 export const TodoTitle = ({ title, id }: TodoTitle) => {
   const dispatch = useAppDispatch();
@@ -12,9 +15,12 @@ export const TodoTitle = ({ title, id }: TodoTitle) => {
   const deleteItem = (id: string) => {
     dispatch(deleteTodolist(id));
   };
+  const changeTodoListTitle = (title: string) => {
+    dispatch(changeTodolistTitle({ todolistId: id, title }));
+  };
   return (
     <div className={s.TodoTitle}>
-      <EditableSpan titleValue={title} />
+      <EditableSpan onChange={changeTodoListTitle} titleValue={title} />
       <IconButton aria-label="delete" size="medium" onClick={() => deleteItem(id)}>
         <DeleteIcon />
       </IconButton>

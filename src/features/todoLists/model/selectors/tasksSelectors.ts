@@ -12,3 +12,7 @@ export const selectCompletedTasks = (state: RootState, todoListId: string) =>
     .length;
 export const selectAllTasksCount = (state: RootState, todoListId: string) =>
   state.todoTasks.tasks[todoListId]?.filter((item) => item).length;
+export const selectTaskTitle = (state: RootState, todoListId: string, taskId: string) => {
+  const task = state.todoTasks.tasks[todoListId].find((item) => item.id === taskId);
+  return task?.title;
+};

@@ -4,11 +4,10 @@ import s from './EditableSpan.module.css';
 import EditIcon from '@mui/icons-material/Edit';
 import { ModalWindow } from '@/common/components/Modal/ModalWindow.tsx';
 
-export const EditableSpan = ({ titleValue, status }: EditableSpanProps) => {
+export const EditableSpan = ({ titleValue, status, onChange }: EditableSpanProps) => {
   const [editMode, setEditMode] = useState(false);
-  const [title, setTitle] = useState(titleValue);
   const [helperText, setHelperText] = useState(' ');
-
+  const [title, setTitle] = useState(titleValue);
   const toggleEditMode = () => {
     if (title.trim().length === 0) {
       setHelperText('Title cannot be empty');
@@ -32,6 +31,7 @@ export const EditableSpan = ({ titleValue, status }: EditableSpanProps) => {
   const turnOffEditModeByEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       toggleEditMode(); // использует ту же проверку
+      onChange(title);
     }
   };
 
@@ -47,7 +47,6 @@ export const EditableSpan = ({ titleValue, status }: EditableSpanProps) => {
             onKeyDown={turnOffEditModeByEnter}
             onChange={changeTitle}
             onBlur={toggleEditMode}
-            error={title.trim().length === 0}
           />
         </ModalWindow>
       ) : (
@@ -59,7 +58,7 @@ export const EditableSpan = ({ titleValue, status }: EditableSpanProps) => {
               transition: 'all 0.3s',
             }}
           >
-            {title}
+            {titleValue}
           </Typography>
           <EditIcon onClick={() => setEditMode(!editMode)} />
         </>
@@ -70,4 +69,5 @@ export const EditableSpan = ({ titleValue, status }: EditableSpanProps) => {
 type EditableSpanProps = {
   titleValue: string;
   status?: boolean;
+  onChange: (title: string) => void;
 };

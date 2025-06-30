@@ -65,14 +65,39 @@ export const todoListSlice = createAppSlice({
         },
       }
     ),
+    changeTodolistTitle: create.asyncThunk(
+      async (payload: { todolistId: string; title: string }, thunkAPI) => {
+        try {
+          const res = await todolistsApi.updateTodolist(payload);
+          return { todolistId: payload.todolistId, title: payload.title, res: res.data.data };
+        } catch (err) {
+          return thunkAPI.rejectWithValue(err);
+        }
+      },
+      {
+        fulfilled: (state, action) => {
+          const { todolistId, title } = action.payload;
+          const todolist = state.todolists.find((item) => item.id === todolistId);
+          if (todolist) {
+            todolist.title = title;
+          }
+        },
+      }
+    ),
   }),
+
   selectors: {
     selectTodolist: (state) => state.todolists,
   },
 });
 export default todoListSlice.reducer;
-export const { fetchTodolists, createTodolist, deleteTodolist, changeTodolistFilterAC } =
-  todoListSlice.actions;
+export const {
+  fetchTodolists,
+  createTodolist,
+  deleteTodolist,
+  changeTodolistFilterAC,
+  changeTodolistTitle,
+} = todoListSlice.actions;
 export const { selectTodolist } = todoListSlice.selectors;
 export type DomainTodoWithFilter = DomainTodolists & {
   filter: FilterTypes;

@@ -50,6 +50,7 @@ export const todoItemsSlice = createAppSlice({
           const res = await tasksApi.updateTaskStatus({ todolistId, taskId, model });
           return { task: res.data.data.item };
         } catch (error) {
+          console.log(error);
           return thunkAPI.rejectWithValue(null);
         }
       },
@@ -107,6 +108,40 @@ export const todoItemsSlice = createAppSlice({
         },
       }
     ),
+
+    changeTaskTitle: create.asyncThunk(
+      async (payload: { todolistId: string; taskId: string; title: string }, thunkAPI) => {
+        const { todolistId, taskId, title } = payload;
+        const allTodolistTasks = (thunkAPI.getState() as RootState).todoTasks.tasks[todolistId];
+        const task = allTodolistTasks.find((task) => task.id === taskId);
+        if (!task) {
+          return thunkAPI.rejectWithValue(null);
+        }
+        const model = {
+          description: task.description,
+          title: title,
+          priority: task.priority,
+          startDate: task.startDate,
+          deadline: task.deadline,
+          status: task.status,
+        };
+        try {
+          const data = await tasksApi.updateTaskTitle({ todolistId, taskId, model });
+          return { todolistId, taskId, res: data.data.data.item };
+        } catch (err) {
+          return thunkAPI.rejectWithValue(err);
+        }
+      },
+      {
+        fulfilled: (state, action) => {
+          const { todolistId, taskId, res } = action.payload;
+          const task = state.tasks[todolistId].find((item) => item.id === taskId);
+          if (task) {
+            task.title = res.title;
+          }
+        },
+      }
+    ),
   }),
 
   extraReducers: (builder) => {
@@ -123,8 +158,14 @@ export const todoItemsSlice = createAppSlice({
   },
 });
 
-export const { createTodoItem, fetchTasks, changeTaskStatus, deleteTaskItem, dnd } =
-  todoItemsSlice.actions;
+export const {
+  createTodoItem,
+  fetchTasks,
+  changeTaskStatus,
+  deleteTaskItem,
+  changeTaskTitle,
+  dnd,
+} = todoItemsSlice.actions;
 export const { selectTodoTasks } = todoItemsSlice.selectors;
 export const todoItemsReducer = todoItemsSlice;
 
