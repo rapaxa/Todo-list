@@ -3,21 +3,18 @@ import { ChangeEvent, useState } from 'react';
 import { Checkbox, Grid, IconButton, ListItem } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { motion } from 'framer-motion';
-import { EditableSpan } from '@/common/components/EditableSpan/EditableSpan.tsx';
-import { getRandomColor } from '@/common/api/getRandomColors.ts';
+import { getRandomColor } from '@/common/utils/getRandomColors.ts';
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
-import {
-  changeTaskStatusAC,
-  deleteTaskItemAC,
-} from '@/features/todoLists/model/todoItems-reducer.ts';
+import { changeTaskStatus, deleteTaskItem } from '@/features/todoLists/model/todoItems-reducer.ts';
 import * as React from 'react';
 import s from './Task.module.css';
+import { EditableSpan } from '@/common/components';
 export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) => {
   const dispatch = useAppDispatch();
   const [checkboxColor] = useState(getRandomColor());
 
   const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(changeTaskStatusAC({ todolistId, id: item.id, done: e.target.checked }));
+    dispatch(changeTaskStatus({ todolistId, id: item.id, done: e.target.checked }));
   };
   const handlerDragOver = (e: React.DragEvent<HTMLLIElement>) => {
     e.preventDefault();
@@ -32,7 +29,7 @@ export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) =>
     e.currentTarget.style.backgroundColor = 'white';
   };
   const deleteTask = () => {
-    dispatch(deleteTaskItemAC({ todolistId, id: item.id }));
+    dispatch(deleteTaskItem({ todolistId, id: item.id }));
   };
 
   return (

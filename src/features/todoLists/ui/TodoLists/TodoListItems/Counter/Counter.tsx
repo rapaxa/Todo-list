@@ -1,10 +1,10 @@
 import { useAppSelector } from '@/common/hooks/useAppSelector.ts';
 import s from './Counter.module.css';
-import { selectTodoListItems } from '@/features/todoLists/model/todoItems-selectors.ts';
-import { CircularProgressWithLabel } from '@/common/components/CircularProgressWithLabel/CircularProgressWithLabel.tsx';
+import { CircularProgressWithLabel } from '@/common/components';
+import { selectTodoTasks } from '@/features/todoLists/model/todoItems-reducer.ts';
 
 export const Counter = ({ todoListId }: CounterProps) => {
-  const getItemCount = useAppSelector(selectTodoListItems);
+  const getItemCount = useAppSelector(selectTodoTasks);
   const activeCount = getItemCount[todoListId].filter((task) => !task.done).length;
   const completedCount = getItemCount[todoListId].filter((task) => task.done).length;
 

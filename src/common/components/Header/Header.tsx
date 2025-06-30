@@ -1,13 +1,16 @@
 import AlarmIcon from '@mui/icons-material/Alarm';
 import s from './Header.module.css';
 import { Button, Switch } from '@mui/material';
-import { useState } from 'react';
+import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
+import { changeThemeMode, selectThemeMode } from '@/app/app-slice.ts';
+import { useAppSelector } from '@/common/hooks/useAppSelector.ts';
 
-type Theme = 'light' | 'dark';
 export const Header = () => {
-  const [theme, setTheme] = useState<Theme>('dark');
+  const dispatch = useAppDispatch();
+  const currentTheme = useAppSelector(selectThemeMode);
+
   const onThemeToggle = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    dispatch(changeThemeMode());
   };
   return (
     <header className={s.header}>
@@ -18,8 +21,12 @@ export const Header = () => {
           </a>
           <div className={s.header__actions}>
             <div className={s.header__theme__toggle}>
-              <label>{theme}</label>
-              <Switch value={theme} onChange={onThemeToggle} defaultChecked color="secondary" />
+              <Switch
+                value={currentTheme}
+                onChange={onThemeToggle}
+                defaultChecked
+                color="secondary"
+              />
             </div>
 
             <div className={s.header__auth}>
