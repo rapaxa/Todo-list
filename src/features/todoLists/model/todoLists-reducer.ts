@@ -1,6 +1,7 @@
 import { createAppSlice } from '@/common/utils/createAppSlice.ts';
 import { todolistsApi } from '@/features/todoLists/api/todoListApi.ts';
 import type { DomainTodolists } from '@/common/types';
+import { changeStatus } from '@/app/app-slice.ts';
 
 export const todoListSlice = createAppSlice({
   name: 'todolists',
@@ -9,12 +10,15 @@ export const todoListSlice = createAppSlice({
   },
   reducers: (create) => ({
     fetchTodolists: create.asyncThunk(
-      async (_arg, thunkAPI) => {
+      async (_arg, { dispatch, rejectWithValue }) => {
         try {
+          dispatch(changeStatus('loading'));
           const data = await todolistsApi.getTodolists();
+          dispatch(changeStatus('succeeded'));
           return data.data;
         } catch (err) {
-          return thunkAPI.rejectWithValue(err);
+          dispatch(changeStatus('failed'));
+          return rejectWithValue(err);
         }
       },
       {
@@ -28,12 +32,15 @@ export const todoListSlice = createAppSlice({
       }
     ),
     createTodolist: create.asyncThunk(
-      async (title: string, thunkAPI) => {
+      async (title: string, { dispatch, rejectWithValue }) => {
         try {
+          dispatch(changeStatus('loading'));
           const res = await todolistsApi.createTodolist(title);
+          dispatch(changeStatus('succeeded'));
           return res.data.data.item;
         } catch (err) {
-          return thunkAPI.rejectWithValue(err);
+          dispatch(changeStatus('failed'));
+          return rejectWithValue(err);
         }
       },
       {
@@ -49,13 +56,15 @@ export const todoListSlice = createAppSlice({
       }
     }),
     deleteTodolist: create.asyncThunk(
-      async (todolistId: string, thunkAPI) => {
+      async (todolistId: string, { dispatch, rejectWithValue }) => {
         try {
+          dispatch(changeStatus('loading'));
           const data = await todolistsApi.deleteTodolist(todolistId);
-
+          dispatch(changeStatus('succeeded'));
           return { todolistId, res: data.data.data };
         } catch (err) {
-          return thunkAPI.rejectWithValue(err);
+          dispatch(changeStatus('failed'));
+          return rejectWithValue(err);
         }
       },
       {
