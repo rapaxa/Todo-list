@@ -7,10 +7,10 @@ import {
   selectCompletedTasks,
 } from '@/features/todoLists/model/selectors/tasksSelectors.ts';
 
-export const Counter = ({ todoListId }: CounterProps) => {
-  const allTasks = useAppSelector((state) => selectAllTasksCount(state, todoListId));
-  const activeCount = useAppSelector((state) => selectActiveTasks(state, todoListId));
-  const completedCount = useAppSelector((state) => selectCompletedTasks(state, todoListId));
+export const Counter = ({ todolistId }: CounterProps) => {
+  const allTasks = useAppSelector((state) => selectAllTasksCount(state, todolistId));
+  const activeCount = useAppSelector((state) => selectActiveTasks(state, todolistId));
+  const completedCount = useAppSelector((state) => selectCompletedTasks(state, todolistId));
   return (
     <div className={s.counter__wrapper}>
       <CircularProgressWithLabel value={completedCount} maxValue={allTasks} />
@@ -27,5 +27,5 @@ export const Counter = ({ todoListId }: CounterProps) => {
   );
 };
 type CounterProps = {
-  todoListId: string;
+  todolistId: string;
 };

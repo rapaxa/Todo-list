@@ -1,12 +1,12 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { todoListSlice } from '@/features/todoLists/model/todoLists-reducer.ts';
+import { todoListSlice } from '@/features/todoLists/model/todolists-slice.ts';
 import { appSlice } from '@/app/app-slice.ts';
-import { todoItemsReducer } from '@/features/todoLists/model/todoItems-reducer.ts';
+import { todolistItemsSlice } from '@/features/todoLists/model/todolistItems-slice.ts';
 
 export const rootReducer = combineReducers({
   [appSlice.name]: appSlice.reducer,
   [todoListSlice.name]: todoListSlice.reducer,
-  [todoItemsReducer.name]: todoItemsReducer.reducer,
+  [todolistItemsSlice.name]: todolistItemsSlice.reducer,
 });
 export const store = configureStore({
   reducer: rootReducer,

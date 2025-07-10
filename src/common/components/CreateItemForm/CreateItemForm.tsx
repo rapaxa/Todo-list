@@ -2,7 +2,7 @@ import { type ChangeEvent, type KeyboardEvent, useState } from 'react';
 import { Button, TextField } from '@mui/material';
 import s from './CreateItemForm.module.css';
 
-export const CreateItemForm = ({ onCreateItem }: CreateItemFormProps) => {
+export const CreateItemForm = ({ onCreateItem, disabled }: CreateItemFormProps) => {
   const [title, setTitle] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
@@ -31,6 +31,7 @@ export const CreateItemForm = ({ onCreateItem }: CreateItemFormProps) => {
         sx={{ width: '80%' }}
         variant={'outlined'}
         value={title}
+        disabled={disabled}
         size={'small'}
         error={!!error}
         helperText={error}
@@ -45,6 +46,7 @@ export const CreateItemForm = ({ onCreateItem }: CreateItemFormProps) => {
           height: '100%',
         }}
         onClick={createItemHandler}
+        disabled={disabled}
       >
         + Add
       </Button>
@@ -53,4 +55,5 @@ export const CreateItemForm = ({ onCreateItem }: CreateItemFormProps) => {
 };
 type CreateItemFormProps = {
   onCreateItem: (str: string) => void;
+  disabled: boolean;
 };

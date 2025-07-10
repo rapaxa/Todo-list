@@ -10,19 +10,21 @@ import {
   changeTaskStatus,
   changeTaskTitle,
   deleteTaskItem,
-} from '@/features/todoLists/model/todoItems-reducer.ts';
+} from '@/features/todoLists/model/todolistItems-slice.ts';
 import s from './Task.module.css';
 import { EditableSpan } from '@/common/components';
 import { TaskStatus } from '@/features/todoLists/api/types.ts';
+import type { DomainTodolist } from '@/features/todoLists/model/todolists-slice.ts';
 
-export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) => {
+export const Task = ({ item, onDragStart, todolist, onDrop, index }: Props) => {
   const dispatch = useAppDispatch();
   const [checkboxColor] = useState(getRandomColor());
+  const { id, entityStatus } = todolist;
 
   const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(
       changeTaskStatus({
-        todolistId,
+        todolistId: id,
         taskId: item.id,
         status: e.target.checked ? TaskStatus.Completed : TaskStatus.New,
       })
@@ -41,10 +43,10 @@ export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) =>
     e.currentTarget.style.backgroundColor = 'white';
   };
   const deleteTask = () => {
-    dispatch(deleteTaskItem({ todolistId, taskId: item.id }));
+    dispatch(deleteTaskItem({ todolistId: id, taskId: item.id }));
   };
   const changeTodolistTaskTitle = (title: string) => {
-    dispatch(changeTaskTitle({ todolistId: todolistId, taskId: item.id, title: title }));
+    dispatch(changeTaskTitle({ todolistId: id, taskId: item.id, title: title }));
   };
 
   return (
@@ -80,15 +82,21 @@ export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) =>
               '&.Mui-checked': { color: checkboxColor },
             }}
             checked={!!item.status}
+            disabled={entityStatus === 'pending'}
             onChange={changeTaskStatusHandler}
           />
           <EditableSpan
             status={!!item.status}
+            disabled={entityStatus === 'pending'}
             onChange={changeTodolistTaskTitle}
             titleValue={item.title}
           />
         </Grid>
-        <IconButton sx={{ alignSelf: 'flex-end' }} onClick={deleteTask}>
+        <IconButton
+          sx={{ alignSelf: 'flex-end' }}
+          onClick={deleteTask}
+          disabled={entityStatus === 'pending'}
+        >
           <Delete />
         </IconButton>
       </ListItem>
@@ -98,10 +106,10 @@ export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) =>
 type Props = {
   item: items;
   index: number;
-  todolistId: string;
   onDragStart: (item: number) => void;
   onDrop: (e: React.DragEvent<HTMLLIElement>, item: number) => void;
   isDragging: boolean;
+  todolist: DomainTodolist;
 };
 type items = {
   id: string;

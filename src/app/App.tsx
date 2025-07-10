@@ -7,7 +7,8 @@ import { themeMode } from '@/common/theme/themeMode.ts';
 import { selectThemeMode } from '@/app/app-slice.ts';
 import { useAppSelector } from '@/common/hooks/useAppSelector.ts';
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
-import { fetchTodolists } from '@/features/todoLists/model/todoLists-reducer.ts';
+import { fetchTodolists } from '@/features/todoLists/model/todolists-slice.ts';
+import { ErrorSnackbar } from '@/common/components/ErrorSnackBar/ErrorSnackBar.tsx';
 
 const App = () => {
   const currentTheme = useAppSelector(selectThemeMode);
@@ -17,13 +18,14 @@ const App = () => {
   }, []);
 
   return (
-    <ThemeProvider theme={themeMode(currentTheme)}>
-      <CssBaseline />
-      <div className={s.App}>
+    <div className={s.App}>
+      <ThemeProvider theme={themeMode(currentTheme)}>
+        <CssBaseline />
         <Header />
         <Main />
-      </div>
-    </ThemeProvider>
+        <ErrorSnackbar />
+      </ThemeProvider>
+    </div>
   );
 };
 

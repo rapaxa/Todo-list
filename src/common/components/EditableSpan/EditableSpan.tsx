@@ -1,10 +1,10 @@
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
-import { TextField, Typography } from '@mui/material';
+import { IconButton, TextField, Typography } from '@mui/material';
 import s from './EditableSpan.module.css';
 import EditIcon from '@mui/icons-material/Edit';
 import { ModalWindow } from '@/common/components/Modal/ModalWindow.tsx';
 
-export const EditableSpan = ({ titleValue, status, onChange }: EditableSpanProps) => {
+export const EditableSpan = ({ titleValue, status, onChange, disabled }: EditableSpanProps) => {
   const [editMode, setEditMode] = useState(false);
   const [helperText, setHelperText] = useState(' ');
   const [title, setTitle] = useState(titleValue);
@@ -43,6 +43,7 @@ export const EditableSpan = ({ titleValue, status, onChange }: EditableSpanProps
             size="small"
             value={title}
             autoFocus
+            disabled={disabled}
             helperText={helperText}
             onKeyDown={turnOffEditModeByEnter}
             onChange={changeTitle}
@@ -60,7 +61,9 @@ export const EditableSpan = ({ titleValue, status, onChange }: EditableSpanProps
           >
             {titleValue}
           </Typography>
-          <EditIcon onClick={() => setEditMode(!editMode)} />
+          <IconButton disabled={disabled} onClick={toggleEditMode}>
+            <EditIcon />
+          </IconButton>
         </>
       )}
     </div>
@@ -70,4 +73,5 @@ type EditableSpanProps = {
   titleValue: string;
   status?: boolean;
   onChange: (title: string) => void;
+  disabled: boolean;
 };

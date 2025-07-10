@@ -7,9 +7,10 @@ import { EditableSpan } from '@/common/components';
 import {
   changeTodolistTitle,
   deleteTodolist,
-} from '@/features/todoLists/model/todoLists-reducer.ts';
+  type DomainTodolist,
+} from '@/features/todoLists/model/todolists-slice.ts';
 
-export const TodoTitle = ({ title, id }: TodoTitle) => {
+export const TodoTitle = ({ title, id, entityStatus }: DomainTodolist) => {
   const dispatch = useAppDispatch();
 
   const deleteItem = (id: string) => {
@@ -20,14 +21,19 @@ export const TodoTitle = ({ title, id }: TodoTitle) => {
   };
   return (
     <div className={s.TodoTitle}>
-      <EditableSpan onChange={changeTodoListTitle} titleValue={title} />
-      <IconButton aria-label="delete" size="medium" onClick={() => deleteItem(id)}>
+      <EditableSpan
+        onChange={changeTodoListTitle}
+        disabled={entityStatus === 'pending'}
+        titleValue={title}
+      />
+      <IconButton
+        aria-label="delete"
+        size="medium"
+        onClick={() => deleteItem(id)}
+        disabled={entityStatus === 'pending'}
+      >
         <DeleteIcon />
       </IconButton>
     </div>
   );
-};
-type TodoTitle = {
-  title: string;
-  id: string;
 };

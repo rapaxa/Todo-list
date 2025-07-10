@@ -1,14 +1,15 @@
 import AlarmIcon from '@mui/icons-material/Alarm';
 import s from './Header.module.css';
-import { Button, Switch } from '@mui/material';
+import { Button, LinearProgress, Switch } from '@mui/material';
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
-import { changeThemeMode, selectThemeMode } from '@/app/app-slice.ts';
+import { changeThemeMode, selectLoading, selectThemeMode } from '@/app/app-slice.ts';
 import { useAppSelector } from '@/common/hooks/useAppSelector.ts';
+import Box from '@mui/material/Box';
 
 export const Header = () => {
   const dispatch = useAppDispatch();
   const currentTheme = useAppSelector(selectThemeMode);
-
+  const loading = useAppSelector(selectLoading);
   const onThemeToggle = () => {
     dispatch(changeThemeMode());
   };
@@ -36,6 +37,7 @@ export const Header = () => {
           </div>
         </div>
       </div>
+      <Box sx={{ width: '100%' }}>{loading === 'pending' && <LinearProgress />}</Box>
     </header>
   );
 };

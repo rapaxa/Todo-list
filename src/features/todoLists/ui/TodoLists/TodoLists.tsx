@@ -2,7 +2,7 @@ import { useAppSelector } from '@/common/hooks/useAppSelector.ts';
 import s from './TodoLists.module.css';
 
 import { motion } from 'framer-motion';
-import { selectTodolist } from '@/features/todoLists/model/todoLists-reducer.ts';
+import { selectTodolist } from '@/features/todoLists/model/todolists-slice.ts';
 import { TodoListItems } from '@/features/todoLists/ui/TodoLists/TodoListItems/TodoListItems.tsx';
 
 export const TodoLists = () => {
@@ -16,7 +16,7 @@ export const TodoLists = () => {
             initial={{ opacity: 0, scale: 0.1 }}
             transition={{ duration: 0.5 }}
           >
-            <TodoListItems todoList={item} />
+            <TodoListItems {...item} />
           </motion.div>
         </div>
       ))}

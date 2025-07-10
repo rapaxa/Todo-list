@@ -3,27 +3,24 @@ import { TodoTitle } from '@/features/todoLists/ui/TodoLists/TodoListItems/TodoT
 import { TaskItem } from '@/features/todoLists/ui/TodoLists/TodoListItems/TaskItem/TaskItem.tsx';
 import { FilterButtons } from '@/features/todoLists/ui/TodoLists/TodoListItems/FiltreButtons/FiltredButtons.tsx';
 import { Counter } from '@/features/todoLists/ui/TodoLists/TodoListItems/Counter/Counter.tsx';
-import type { DomainTodoWithFilter } from '@/features/todoLists/model/todoLists-reducer.ts';
+import type { DomainTodolist } from '@/features/todoLists/model/todolists-slice.ts';
 import { CreateItemForm } from '@/common/components';
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
-import { createTodoItem } from '@/features/todoLists/model/todoItems-reducer.ts';
-// import { createTodoItem } from '@/features/todoLists/model/todoItems-reducer.ts';
+import { createTodoItem } from '@/features/todoLists/model/todolistItems-slice.ts';
 
-export const TodoListItems = ({ todoList }: TodoListItemsTypes) => {
+export const TodoListItems = (todolist: DomainTodolist) => {
   const dispatch = useAppDispatch();
   const createTask = (title: string) => {
-    dispatch(createTodoItem({ todolistId: todoList.id, title }));
+    dispatch(createTodoItem({ todolistId: todolist.id, title }));
   };
+
   return (
     <div className={s.task__wrapper}>
-      <TodoTitle title={todoList.title} id={todoList.id} />
-      <CreateItemForm onCreateItem={createTask} />
-      <TaskItem todoList={todoList} />
-      <Counter todoListId={todoList.id} />
-      <FilterButtons id={todoList.id} />
+      <TodoTitle {...todolist} />
+      <CreateItemForm onCreateItem={createTask} disabled={todolist.entityStatus === 'pending'} />
+      <TaskItem {...todolist} />
+      <Counter todolistId={todolist.id} />
+      <FilterButtons id={todolist.id} />
     </div>
   );
-};
-export type TodoListItemsTypes = {
-  todoList: DomainTodoWithFilter;
 };

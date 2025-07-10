@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
 import s from './FiltreButtons.module.css';
-import { changeTodolistFilterAC } from '@/features/todoLists/model/todoLists-reducer.ts';
+import { changeTodolistFilterAC } from '@/features/todoLists/model/todolists-slice.ts';
 export const FilterButtons = ({ id }: FiltredButtonsProps) => {
   const dispatch = useAppDispatch();
 

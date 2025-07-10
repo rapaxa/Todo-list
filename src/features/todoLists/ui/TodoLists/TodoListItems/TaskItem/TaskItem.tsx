@@ -1,24 +1,28 @@
 import { AnimatePresence } from 'framer-motion';
 import { List } from '@mui/material';
 import { useAppSelector } from '@/common/hooks/useAppSelector.ts';
-import { TodoListItemsTypes } from '@/features/todoLists/ui/TodoLists/TodoListItems/TodoListItems.tsx';
 import { Task } from './Task/Task.tsx';
 import { useEffect, useState } from 'react';
-import { dnd, fetchTasks, selectTodoTasks } from '@/features/todoLists/model/todoItems-reducer.ts';
+import {
+  dnd,
+  fetchTasks,
+  selectTodoTasks,
+} from '@/features/todoLists/model/todolistItems-slice.ts';
 import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
 import * as React from 'react';
 import { TaskStatus } from '@/features/todoLists/api/types.ts';
+import type { DomainTodolist } from '@/features/todoLists/model/todolists-slice.ts';
 
-export const TaskItem = ({ todoList }: TodoListItemsTypes) => {
+export const TaskItem = (todoList: DomainTodolist) => {
   const items = useAppSelector(selectTodoTasks);
+  const dispatch = useAppDispatch();
+
   const { id, filter } = todoList;
 
   useEffect(() => {
     dispatch(fetchTasks(id));
-  }, []);
+  }, [dispatch, id]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const dispatch = useAppDispatch();
-
   let filteredTodo = items[id];
 
   if (filter === 'completed') {
@@ -45,7 +49,7 @@ export const TaskItem = ({ todoList }: TodoListItemsTypes) => {
           <Task
             key={item.id}
             item={item}
-            todolistId={id}
+            todolist={todoList}
             index={index}
             onDragStart={handleDragStart}
             onDrop={handleDrop}
@@ -56,5 +60,3 @@ export const TaskItem = ({ todoList }: TodoListItemsTypes) => {
     </List>
   );
 };
-
-export type FilterButtonsTypes = 'all' | 'completed' | 'active';
