@@ -1,55 +1,59 @@
-import { AnimatePresence } from 'framer-motion';
-import { List } from '@mui/material';
-import { useAppSelector } from '@/common/hooks/useAppSelector.ts';
-import { selectTodoListItems } from '@/features/todoLists/model/todoItems-selectors.ts';
-import { TodoListItemsTypes } from '@/features/todoLists/ui/TodoLists/TodoListItems/TodoListItems.tsx';
-import { Task } from './Task/Task.tsx';
-import { useState } from 'react';
-import { dndAC } from '@/features/todoLists/model/todoItems-reducer.ts';
-import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
-import * as React from 'react';
+import { TaskStatus } from '@/shared/enums';
+import { Grid } from '@mui/material';
+import { Task } from './Task/Task';
+import { useGetTasksQuery } from '@/features/todoLists/api/tasksApi.ts';
+import { TasksSkeleton } from '@/features/todoLists/ui/TodoLists/TodoListItems/TaskItem/TasksSkeleton/TasksSkeleton.tsx';
+import type { DomainTodolistsWithStatus } from '@/features/todoLists/lib/types';
+import { BasicPagination } from '@/common/components/BasicPagination/BasicPagination.tsx';
+import { useEffect, useState } from 'react';
+import { PAGE_SIZE } from '@/common/constants';
+import { Counter } from '@/features/todoLists/ui/TodoLists/TodoListItems/Counter/Counter.tsx';
+import Box from '@mui/material/Box';
 
-export const TaskItem = ({ todoList }: TodoListItemsTypes) => {
-  const items = useAppSelector(selectTodoListItems);
+export const TaskItem = (todoList: DomainTodolistsWithStatus) => {
+  const [currentPage, setCurrentPage] = useState(1);
+
   const { id, filter } = todoList;
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const dispatch = useAppDispatch();
-  let filteredTodo = items[id];
 
-  if (filter === 'completed') {
-    filteredTodo = filteredTodo.filter((item) => item.done);
-  } else if (filter === 'active') {
-    filteredTodo = filteredTodo.filter((item) => !item.done);
+  const { data: tasks, isLoading } = useGetTasksQuery(
+    { todolistId: id, params: { count: PAGE_SIZE, page: currentPage } },
+    { selectFromResult: ({ data, isLoading }) => ({ data, isLoading }) }
+  );
+
+  useEffect(() => {
+    if (!isLoading && tasks?.items?.length === 0 && currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  }, [tasks, isLoading, currentPage]);
+
+  let filteredTodo = tasks?.items;
+  if (isLoading) {
+    return <TasksSkeleton />;
   }
 
-  const handleDragStart = (index: number) => {
-    setDraggedIndex(index);
-  };
+  if (filter === 'completed') {
+    filteredTodo = filteredTodo?.filter((item) => item.status === TaskStatus.Completed);
+  } else if (filter === 'active') {
+    filteredTodo = filteredTodo?.filter((item) => item.status === TaskStatus.New);
+  }
 
-  const handleDrop = (e: React.DragEvent<HTMLLIElement>, index: number) => {
-    if (draggedIndex !== null && draggedIndex !== index) {
-      dispatch(dndAC({ todolistId: todoList.id, draggedIndex: draggedIndex, targetIndex: index }));
-      setDraggedIndex(index);
-      e.currentTarget.style.backgroundColor = 'white';
-    }
-  };
   return (
-    <List>
-      <AnimatePresence>
-        {filteredTodo.map((item, index) => (
-          <Task
-            key={item.id}
-            item={item}
+    <Grid height={'100%'} position={'relative'}>
+      <Box sx={{ flexGrow: 1 }}>
+        {filteredTodo?.map((item) => <Task key={item.id} item={item} todolist={todoList} />)}
+      </Box>
+
+      <Box position={'absolute'} bottom={0} width="100%">
+        <Counter page={currentPage} todolistId={id} />
+        {tasks && tasks?.totalCount > PAGE_SIZE ? (
+          <BasicPagination
+            totalCount={tasks?.totalCount ?? 0}
+            currentPage={currentPage}
             todolistId={id}
-            index={index}
-            onDragStart={handleDragStart}
-            onDrop={handleDrop}
-            isDragging={draggedIndex === index}
+            onChange={setCurrentPage}
           />
-        ))}
-      </AnimatePresence>
-    </List>
+        ) : null}
+      </Box>
+    </Grid>
   );
 };
-
-export type FilterButtonsTypes = 'all' | 'completed' | 'active';

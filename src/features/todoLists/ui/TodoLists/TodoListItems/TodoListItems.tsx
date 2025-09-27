@@ -1,28 +1,37 @@
-import { CreateItemForm } from '@/common/components/CreateItemForm/CreateItemForm.tsx';
-import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
-import { createTodoItemAC } from '@/features/todoLists/model/todoItems-reducer.ts';
-import s from './TodoListItems.module.css';
 import { TodoTitle } from '@/features/todoLists/ui/TodoLists/TodoListItems/TodoTitle/TodoTitle.tsx';
-import {
-  FilterButtonsTypes,
-  TaskItem,
-} from '@/features/todoLists/ui/TodoLists/TodoListItems/TaskItem/TaskItem.tsx';
+import { TaskItem } from '@/features/todoLists/ui/TodoLists/TodoListItems/TaskItem/TaskItem.tsx';
 import { FilterButtons } from '@/features/todoLists/ui/TodoLists/TodoListItems/FiltreButtons/FiltredButtons.tsx';
+import { CreateItemForm } from '@/common/components';
+import Box from '@mui/material/Box';
+import { useCreateTaskMutation } from '@/features/todoLists/api/tasksApi.ts';
+import { useAppSelector } from '@/common/hooks';
+import { selectLoading } from '@/app/model/app-slice.ts';
+import type { DomainTodolistsWithStatus } from '@/features/todoLists/lib/types';
 
-export const TodoListItems = ({ todoList }: TodoListItemsTypes) => {
-  const dispatch = useAppDispatch();
+export const TodoListItems = (todolist: DomainTodolistsWithStatus) => {
+  const [createTaskMutation] = useCreateTaskMutation();
+  const loading = useAppSelector(selectLoading);
+
   const createTask = (title: string) => {
-    dispatch(createTodoItemAC({ todolistId: todoList.id, title }));
+    createTaskMutation({ todolistId: todolist.id, title });
   };
+
   return (
-    <div className={s.task__wrapper}>
-      <TodoTitle title={todoList.title} id={todoList.id} />
-      <CreateItemForm onCreateItem={createTask} />
-      <TaskItem todoList={todoList} />
-      <FilterButtons id={todoList.id} />
-    </div>
+    <Box
+      sx={{
+        border: '1px solid gray',
+        padding: '1rem',
+        margin: '1rem',
+        height: '650px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+      }}
+    >
+      <TodoTitle id={todolist.id} title={todolist.title} />
+      <CreateItemForm onCreateItem={createTask} disabled={loading === 'pending'} />
+      <TaskItem {...todolist} />
+      <FilterButtons id={todolist.id} />
+    </Box>
   );
-};
-export type TodoListItemsTypes = {
-  todoList: { id: string; title: string; filter: FilterButtonsTypes };
 };

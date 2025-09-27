@@ -1,0 +1,29 @@
+.title {
+  text-align: center;
+  font-size: 250px;
+  background: linear-gradient(
+    90deg,
+    rgba(42, 123, 155, 1) 0%,
+    rgb(80, 135, 87) 50%,
+    rgba(237, 221, 83, 1) 100%
+  );
+  margin: 0;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 50px;
+  background: linear-gradient(
+    90deg,
+    rgb(32, 37, 41) 0%,
+    rgb(183, 227, 188) 70%,
+    rgb(55, 51, 5) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  margin: 0;
+  text-transform: uppercase;
+}

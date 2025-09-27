@@ -1,10 +1,11 @@
-import { type ChangeEvent, type KeyboardEvent, useState } from 'react';
-import { Button, TextField } from '@mui/material';
-import s from './CreateItemForm.module.css';
+import { type ChangeEvent, type KeyboardEvent, useRef, useState } from 'react';
+import { Button, Grid, TextField } from '@mui/material';
+import Box from '@mui/material/Box';
 
-export const CreateItemForm = ({ onCreateItem }: CreateItemFormProps) => {
+export const CreateItemForm = ({ onCreateItem, disabled }: CreateItemFormProps) => {
   const [title, setTitle] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const createItemHandler = () => {
     const trimmedTitle = title.trim();
@@ -15,42 +16,50 @@ export const CreateItemForm = ({ onCreateItem }: CreateItemFormProps) => {
       setError('Title is required');
     }
   };
+
   const changeTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.currentTarget.value);
     setError(null);
   };
+
   const createItemOnEnterHandler = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       createItemHandler();
     }
   };
+
   return (
-    <div className={s.Input_wrapper}>
-      <TextField
-        label={'Add a new Todo'}
-        sx={{ width: '80%' }}
-        variant={'outlined'}
-        value={title}
-        size={'small'}
-        error={!!error}
-        helperText={error}
-        onChange={changeTitleHandler}
-        onKeyDown={createItemOnEnterHandler}
-      />
-      <Button
-        sx={{
-          backgroundColor: 'var(--main-color)',
-          color: 'white',
-          width: '100px',
-          height: '100%',
-        }}
-        onClick={createItemHandler}
-      >
-        + Add
-      </Button>
-    </div>
+    <Grid container spacing={3}>
+      <Box>
+        <TextField
+          label={'Add a new Todo'}
+          sx={{ width: '100%' }}
+          inputRef={inputRef}
+          variant={'outlined'}
+          value={title}
+          size={'small'}
+          error={!!error}
+          helperText={error}
+          onChange={changeTitleHandler}
+          onKeyDown={createItemOnEnterHandler}
+        />
+      </Box>
+      <Grid size={2}>
+        <Button
+          sx={{
+            backgroundColor: 'var(--main-color)',
+            color: 'white',
+          }}
+          onClick={createItemHandler}
+          disabled={disabled}
+        >
+          Add
+        </Button>
+      </Grid>
+    </Grid>
   );
 };
-type CreateItemFormProps = {
+interface CreateItemFormProps {
   onCreateItem: (str: string) => void;
-};
+  disabled: boolean;
+}

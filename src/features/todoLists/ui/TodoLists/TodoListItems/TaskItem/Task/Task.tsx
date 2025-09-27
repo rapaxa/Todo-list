@@ -1,93 +1,83 @@
-// Task.tsx
-import { ChangeEvent, useState } from 'react';
-import { Checkbox, Grid, IconButton, ListItem } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+import type { DomainTask } from '@/features/todoLists/api/types/tasksApi.types.ts';
+import { useState } from 'react';
+import { getRandomColor } from '@/common/utils';
+import { useAppSelector, useTaskActions } from '@/common/hooks';
+import { selectThemeMode } from '@/app/model/app-slice.ts';
+import Box from '@mui/material/Box';
+import { getTaskSxStyle } from '@/features/todoLists/ui/TodoLists/TodoListItems/TaskItem/Task/TaskSx.style.ts';
+import { Checkbox, IconButton, Typography } from '@mui/material';
+import { TaskStatus } from '@/shared/enums';
+import { EditableSpan, FontAwesomeSvgIcon, IconMenu } from '@/common/components';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'framer-motion';
-import { EditableSpan } from '@/common/components/EditableSpan/EditableSpan.tsx';
-import { getRandomColor } from '@/common/api/getRandomColors.ts';
-import { useAppDispatch } from '@/common/hooks/useAppDispatch.ts';
-import {
-  changeTaskStatusAC,
-  deleteTaskItemAC,
-} from '@/features/todoLists/model/todoItems-reducer.ts';
-import * as React from 'react';
+import type { DomainTodolistsWithStatus } from '@/features/todoLists/lib/types';
 
-export const Task = ({ item, todolistId, onDragStart, onDrop, index }: Props) => {
-  const dispatch = useAppDispatch();
+interface Props {
+  item: DomainTask;
+  todolist: DomainTodolistsWithStatus;
+}
+
+export const Task = ({ item, todolist }: Props) => {
   const [checkboxColor] = useState(getRandomColor());
+  const [mode, setMode] = useState<'view' | 'edit'>('view');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(changeTaskStatusAC({ todolistId, id: item.id, done: e.target.checked }));
-  };
-  const handlerDragOver = (e: React.DragEvent<HTMLLIElement>) => {
-    e.preventDefault();
-    e.currentTarget.style.backgroundColor = 'lightgray';
-  };
-  const handlerDragLeave = (e: React.DragEvent<HTMLLIElement>) => {
-    e.preventDefault();
-    e.currentTarget.style.backgroundColor = 'white';
-  };
-  const handleDragEnd = (e: React.DragEvent<HTMLLIElement>) => {
-    e.preventDefault();
-    e.currentTarget.style.backgroundColor = 'white';
-  };
-  const deleteTask = () => {
-    dispatch(deleteTaskItemAC({ todolistId, id: item.id }));
-  };
+  const currentTheme = useAppSelector(selectThemeMode);
+
+  const { changeTaskStatus, deleteTask, changeTaskTitle } = useTaskActions(todolist, item);
 
   return (
     <motion.div
       key={item.id}
-      initial={{ opacity: 0, y: -300 }}
+      initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: 100 }}
-      transition={{ duration: 0.4 }}
-      style={{ listStyle: 'none' }}
+      transition={{ duration: 0.3 }}
     >
-      <ListItem
-        draggable={true}
-        onDragStart={() => onDragStart(index)}
-        onDragOver={(e) => handlerDragOver(e)}
-        onDragLeave={(e) => handlerDragLeave(e)}
-        onDragEnd={(e) => handleDragEnd(e)}
-        onDrop={(e) => onDrop(e, index)}
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          backgroundColor: 'rgb(250,250,250)',
-          margin: '10px 0',
-          borderRadius: '20px',
-          cursor: 'grab',
-        }}
-      >
-        <Grid container spacing={2} alignItems="center">
-          <Checkbox
-            sx={{
+      <Box sx={getTaskSxStyle(currentTheme).box}>
+        <Checkbox
+          sx={{
+            color: checkboxColor,
+            '&.Mui-checked': {
               color: checkboxColor,
-              '&.Mui-checked': { color: checkboxColor },
-            }}
-            checked={item.done}
-            onChange={changeTaskStatusHandler}
+            },
+            mr: 1,
+          }}
+          checked={item.status === TaskStatus.Completed}
+          onChange={changeTaskStatus}
+        />
+
+        {mode === 'edit' ? (
+          <EditableSpan
+            titleValue={item.title}
+            onChange={changeTaskTitle}
+            onCloseEdit={() => setMode('view')}
           />
-          <EditableSpan status={item.done} titleValue={item.title} />
-        </Grid>
-        <IconButton sx={{ alignSelf: 'flex-end' }} onClick={deleteTask}>
-          <Delete />
+        ) : (
+          <Typography>{item.title}</Typography>
+        )}
+
+        {isMenuOpen && (
+          <IconMenu
+            items={[
+              { label: 'Edit', icon: <EditIcon />, onClick: () => setMode('edit') },
+              { label: 'Delete', icon: <DeleteIcon />, onClick: deleteTask },
+            ]}
+            styleSX={{ position: 'absolute', top: '0', right: 0 }}
+            onClose={() => setIsMenuOpen(false)}
+          />
+        )}
+
+        <IconButton
+          sx={{ zIndex: -1 }}
+          aria-label="menu"
+          onClick={() => setIsMenuOpen((prev) => !prev)}
+        >
+          <FontAwesomeSvgIcon key="gear" icon={faGear} />
         </IconButton>
-      </ListItem>
+      </Box>
     </motion.div>
   );
-};
-type Props = {
-  item: items;
-  index: number;
-  todolistId: string;
-  onDragStart: (item: number) => void;
-  onDrop: (e: React.DragEvent<HTMLLIElement>, item: number) => void;
-  isDragging: boolean;
-};
-type items = {
-  id: string;
-  title: string;
-  done: boolean;
 };
