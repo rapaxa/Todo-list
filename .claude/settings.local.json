@@ -1,13 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mkdir:*)",
-      "Bash(rm:*)",
-      "Bash(git commit:*)",
-      "Bash(pnpm run:*)",
-      "Bash(git filter-branch:*)",
-      "Bash(git add:*)",
-      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --env-filter 'export GIT_COMMITTER_EMAIL=\"\"rapaxa123@gmail.com\"\"; export GIT_AUTHOR_EMAIL=\"\"rapaxa123@gmail.com\"\"' --msg-filter '\ncase \"\"$GIT_COMMIT\"\" in\ncfaaa92*) echo \"\"feat: implement drag and drop functionality\"\";;\n8000d36*) echo \"\"feat: add task counter feature\"\";;\n497e4cf*) echo \"\"fix: resolve copy functionality issue\"\";;\nd6f470b*) echo \"\"feat: add selectors for counting tasks\"\";;\n2b44a73*) echo \"\"feat: implement CRUD update operations for tasks and todolists\"\";;\n6ddcfc2*) echo \"\"feat: add error handling system\"\";;\n5c79754*) echo \"\"refactor: code improvements\"\";;\na378676*) echo \"\"feat: add new feature implementation\"\";;\n428f931*) echo \"\"feat: integrate Zod validation library\"\";;\n93c9b1d*) echo \"\"feat: add Zod validation with response handler\"\";;\nb4e7907*) echo \"\"feat: implement authentication flow\"\";;\nd054587*) echo \"\"feat: enhance authentication system\"\";;\nf8356b1*) echo \"\"feat: release new version with improvements\"\";;\ndd3d800*) echo \"\"feat: implement RTK Query for data fetching\"\";;\n7127385*) echo \"\"feat: add task counter functionality\"\";;\n4f2370e*) echo \"\"feat: integrate RTK Query for state management\"\";;\ndcaa243*) echo \"\"config: update environment configuration\"\";;\nb3e72ec*) echo \"\"feat: add authentication session storage\"\";;\n052e10e*) echo \"\"feat: add menu navigation for todolist\"\";;\n105fd5a*) echo \"\"fix: resolve various bugs and issues\"\";;\n2a07545*) echo \"\"feat: complete project implementation\"\";;\nc9b6bea*) echo \"\"release: final version\"\";;\n330f4f6*) echo \"\"refactor: update project configuration and code structure\"\";;\n167ff09*) echo \"\"build: prepare production build\"\";;\n21d3657*) echo \"\"config: configure base path for GitHub Pages deployment\"\";;\n378842e*) echo \"\"config: update Claude settings\"\";;\n*) cat;;\nesac\n' HEAD)"
+      "Bash(git log:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []
